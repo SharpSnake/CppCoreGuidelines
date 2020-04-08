@@ -1823,7 +1823,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 
 * Often, explicit error checking and handling consume as much time and space as exception handling.
 * Often, cleaner code yields better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
-* A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
+* A good rule for performance critical code is to move checking outside the [critical](#Rper-critical) part of the code.
 * In the longer term, more regular code gets better optimized.
 * Always carefully [measure](#Rper-measure) before making performance claims.
 
@@ -1982,7 +1982,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 ##### Exception
 
 Use `zstring` and `czstring` to represent C-style, zero-terminated strings.
-But when doing so, use `std::string_view` or `string_span` from the [GSL](#GSL) to prevent range errors.
+But when doing so, use `std::string_view` or `string_span` from the [GSL](#S-gsl) to prevent range errors.
 
 ##### Enforcement
 
@@ -3135,7 +3135,7 @@ such as `string` and `vector`, that needs to do free store allocations.
 
 To compare, if we passed out all values as return values, we would something like this:
 
-    pair<istream&, string> get_string(istream& is);  // not recommended
+    pair<istream&, string> get_string(istream& is)  // not recommended
     {
         string s;
         is >> s;
@@ -8420,7 +8420,7 @@ This is a special case of the rule that [helper functions should be defined in t
 
 ##### Enforcement
 
-* Flag operator definitions that are not it the namespace of their operands
+* Flag operator definitions that are not in the namespace of their operands
 
 ### <a name="Ro-lambda"></a>C.170: If you feel like overloading a lambda, use a generic lambda
 
@@ -8502,7 +8502,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
         ~Immutable_string()
         {
             if (size >= buffer_size)
-                delete string_ptr;
+                delete[] string_ptr;
         }
 
         const char* get_str() const
@@ -9091,7 +9091,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#Re-finally)
 
-**See also**: [RAII](#Rr-raii)
+**See also**: [RAII](#Re-raii)
 
 ### <a name="Rr-use-ptr"></a>R.2: In interfaces, use raw pointers to denote individual objects (only)
 
@@ -11707,7 +11707,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 ##### Enforcement
 
-* Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return.
+* Force the elimination of C-style casts, except when casting a `[[nodiscard]]` function return value to `void`.
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 * Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
@@ -11752,7 +11752,7 @@ The C-style cast is dangerous because it can do any kind of conversion, deprivin
 ##### Note
 
 When converting between types with no information loss (e.g. from `float` to
-`double` or `int64` from `int32`), brace initialization may be used instead.
+`double` or from `int32` to `int64`), brace initialization may be used instead.
 
     double d {some_float};
     int64_t i {some_int32};
@@ -12316,7 +12316,7 @@ This is a major part of the discussion of [C++'s model for type- and resource-sa
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
 * Use [shared_ptr](#Rf-shared_ptr) to avoid lifetime problems.
 * Use [references](#Rf-ptr-ref) when `nullptr` isn't a possibility.
-* Use [not_null](#Rf-not_null) to catch unexpected `nullptr` early.
+* Use [not_null](#Rf-nullptr) to catch unexpected `nullptr` early.
 * Use the [bounds profile](#SS-bounds) to avoid range errors.
 
 
@@ -16506,7 +16506,7 @@ Templates can also be used for meta-programming; that is, programs that compose 
 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1 or later, you can uncomment them.
@@ -16536,8 +16536,8 @@ Concept definition rule summary:
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
 * [T.25: Avoid complementary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
-* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-not)
-* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-or)
+* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-???)
+* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-???)
 * ???
 
 Template interface rule summary:
@@ -16798,7 +16798,7 @@ See the reference to more specific rules.
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
-It is an [ISO Technical Specification](#Ref-conceptsTS), but currently supported only by GCC.
+It is an [ISO Technical Specification](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf), but currently supported only by GCC.
 Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
@@ -16885,7 +16885,7 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#S-gsl) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
 save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
@@ -17682,7 +17682,7 @@ Because that's the best we can do without direct concept support.
 
 ##### Note
 
-Beware of [complementary constraints](# T.25).
+Beware of [complementary constraints](#Rt-not).
 Faking concept overloading using `enable_if` sometimes forces us to use that error-prone design technique.
 
 ##### Enforcement
@@ -17748,7 +17748,7 @@ Templates typically appear in header files so their context dependencies are mor
 ##### Note
 
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
-For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
+For example, algorithms usually use other algorithms and invoke operations that do not exclusively operate on arguments.
 And don't get us started on macros!
 
 **See also**: [T.69](#Rt-customization)
@@ -17915,7 +17915,7 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
         // use loop calling copy constructors
     }
 
-    template<class Itert>
+    template<class Iter>
     Out copy(Iter first, Iter last, Iter out)
     {
         return copy_helper(first, last, out, typename copy_trait<Iter>::tag{})
@@ -18031,7 +18031,7 @@ or a traditional traits template to be specialized on the user's type.
 If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter,
 put it in a `::detail` namespace and qualify the call as `detail::helper(t);`.
 An unqualified call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked;
-this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-unconstrained-adl).
+this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-visible).
 
 
 ##### Enforcement
@@ -20271,17 +20271,20 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
 ##### Example, bad
 
+    // Old conventional style: many problems
+
     class Picture
     {
         int mx;
         int my;
         char * data;
     public:
+        // main problem: constructor does not fully construct
         Picture(int x, int y)
         {
-            mx = x,
+            mx = x;         // also bad: assignment in constructor body rather than in member initializer
             my = y;
-            data = nullptr;
+            data = nullptr; // also bad: constant initialization in constructor rather than in member initializer
         }
 
         ~Picture()
@@ -20289,6 +20292,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             Cleanup();
         }
 
+        // bad: two-phase initialization
         bool Init()
         {
             // invariant checks
@@ -20298,10 +20302,11 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             if (data) {
                 return false;
             }
-            data = (char*) malloc(mx*my*sizeof(int));
+            data = (char*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
             return data != nullptr;
         }
 
+        // also bad: no reason to make cleanup a separate function
         void Cleanup()
         {
             if (data) free(data);
@@ -20320,20 +20325,20 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     class Picture
     {
-        size_t mx;
-        size_t my;
+        int mx;
+        int my;
         vector<char> data;
 
-        static size_t check_size(size_t s)
+        static int check_size(int size)
         {
             // invariant check
-            Expects(s > 0);
-            return s;
+            Expects(size > 0);
+            return size;
         }
 
     public:
-        // even more better would be a class for a 2D Size as one single parameter
-        Picture(size_t x, size_t y)
+        // even better would be a class for a 2D Size as one single parameter
+        Picture(int x, int y)
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
@@ -20341,6 +20346,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         {
             // picture is ready-to-use
         }
+
         // compiler generated dtor does the job. (also see C.21)
     };
 
@@ -20654,13 +20660,13 @@ Type safety profile summary:
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
 [Don't cast away const](#Res-casts-const).
 * <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts:
-Prefer [construction](#Res-construct) or [named casts](#Res-cast-named).
+Prefer [construction](#Res-construct) or [named casts](#Res-casts-named).
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
 * <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
-[default member initializers](#Rc-in-class-initializers).
+[default member initializers](#Rc-in-class-initializer).
 * <a name="Pro-type-unon"></a>Type.7: Avoid naked union:
 [Use `variant` instead](#Ru-naked).
 * <a name="Pro-type-varargs"></a>Type.8: Avoid varargs:
@@ -22481,6 +22487,10 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers96]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
   \[Meyers97]:        S. Meyers. Effective C++ (2nd Edition) (Addison-Wesley, 1997).
+* <a name="Meyers01"></a>
+  \[Meyers01]:        S. Meyers. Effective STL (Addison-Wesley, 2001).
+* <a name="Meyers05"></a>
+  \[Meyers05]:        S. Meyers. Effective C++ (3rd Edition) (Addison-Wesley, 2005).
 * <a name="Meyers15"></a>
   \[Meyers15]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
